@@ -1,25 +1,48 @@
-import React, {useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { ApiClass } from './Api';
 
 function AnotherAppContainer() {
 
+    const[state, setState] = useState();
     useEffect(() => {
         ApiClass.CustomersIndex().then(message => {
             console.log(message);
+            setState(message.data);
         })
-    })
+    }, [])
     return (
         <div className="container">
-            <div className="row justify-content-center">
-                <div className="col-md-8">
-                    <div className="card">
-                        <div className="card-header">another_app_container Component</div>
 
-                        <div className="card-body">I'm an another_app_container component!</div>
-                    </div>
-                </div>
-            </div>
+        <h4 className="text-center">Lista użytkowników</h4>
+            <ul className="list-group">
+
+                {(state && state.map((item, index) =>
+              <li key={index} className="list-group-item">
+                  <div className="row">
+                      <div className="col-md-6">
+                          <b>Imię: </b>{item.name}
+                      </div>
+                      <div className="col-md-6">
+                          <b>Adres: </b>{item.adress}
+                      </div>
+                      <div className="col-md-6">
+                          <b>Wiek: </b>{item.age}
+                      </div>
+                      <div className="col-md-6">
+                          <b>Płeć: </b>{item.gender}
+                      </div>
+                      <div className="col-md-12">
+                          <button data-id="{item.id}"
+                          className="btn btn-primary btn-sm">Wybierz</button>    
+                      </div>
+                  </div>
+                  
+              </li>
+              
+                ))}
+            </ul>
+
         </div>
     );
 }
