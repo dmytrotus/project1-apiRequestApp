@@ -15,6 +15,9 @@
                     @endif
 
                     {{ __('You are logged in!') }}
+
+
+                    <div id="another_app_container"></div>
                 </div>
             </div>
         </div>
