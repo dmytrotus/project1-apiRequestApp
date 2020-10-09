@@ -118,9 +118,32 @@ class CustomersControllerApi extends Controller
      * @param  \App\Models\Customers  $customers
      * @return \Illuminate\Http\Response
      */
-    public function edit(Customers $customer)
+    public function edit($customer_id)
     {	
-    	//get customer
+        $request = $this->domain.'/api/customersapi/'.$customer_id.'/edit';
+
+        $client = new Client();
+        try {
+                $response = $client->request('GET', $request, [
+                    'headers'  => [
+                        'token' => $this->token
+                    ]
+                ]);
+            }
+             catch (RequestException $e)
+              {
+                echo Psr7\str($e->getRequest());
+
+                if ($e->hasResponse()) {
+                    $body = $e->getResponse()->getBody();
+                    session()->flash('success', json_decode($body)->message);
+                    return redirect()->route('customers.index');
+                }
+            }
+
+        $json = $response->getBody();
+        $customer = json_decode($json)->message;
+
         return view('adminpanel.layouts.single_customer')
         ->with(compact('customer'));
     }
