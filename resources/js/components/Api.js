@@ -10,14 +10,14 @@ class Api
 
     CustomersIndex = async () => {
      
-        const url = this.domain + '/api/customers';
+        const url = this.domain + '/api/customersapi';
         const {data: {message}, status} = await axios(url);
         return message;
 
     }
 
     CustomersStore = async (data) => {
-        const url = '/register';
+        const url = this.domain + '/api/customersapi';
         const response = await axios.post(url, data);
         return response;
     }

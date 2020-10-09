@@ -66731,7 +66731,7 @@ var Api = function Api() {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            url = _this.domain + '/api/customers';
+            url = _this.domain + '/api/customersapi';
             _context.next = 3;
             return axios(url);
 
@@ -66756,7 +66756,7 @@ var Api = function Api() {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
-              url = '/register';
+              url = _this.domain + '/api/customersapi';
               _context2.next = 3;
               return axios.post(url, data);
 

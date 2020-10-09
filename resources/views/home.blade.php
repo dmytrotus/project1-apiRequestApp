@@ -17,7 +17,8 @@
                     {{ __('You are logged in!') }}
 
 
-                    <div id="another_app_container"></div>
+                    <!-- Commented container has react component inside -->
+                    <!-- <div id="another_app_container"></div> -->
                 </div>
             </div>
         </div>
