@@ -155,11 +155,38 @@ class CustomersControllerApi extends Controller
      * @param  \App\Models\Customers  $customers
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $r, Customers $customer)
+    public function update(Request $r, $customer)
     {
-       
-       ///update customer
-        session()->flash('success', 'Użytkownik zaktualizowany');
+       $request = $this->domain.'/api/customersapi/'.$customer;
+
+        $client = new Client();
+        try {
+                $response = $client->request('PUT', $request, [
+                    'headers'  => [
+                        'token' => $this->token
+                    ],
+                    'form_params' => [
+                        'name' => $r->name,
+                        'adress' => $r->adress,
+                        'gender' => $r->gender,
+                        'age' => (int)$r->age
+                    ]
+                ]);
+            }
+             catch (RequestException $e)
+              {
+                echo Psr7\str($e->getRequest());
+
+                if ($e->hasResponse()) {
+                    $body = $e->getResponse()->getBody();
+                    session()->flash('success', json_decode($body)->message);
+                    return redirect()->route('customers.index');
+                }
+            }
+
+        $json = $response->getBody();
+        $message = json_decode($json)->message;
+        session()->flash('success', $message);
         return redirect()->back();
     }
 
