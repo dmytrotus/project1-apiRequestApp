@@ -196,9 +196,32 @@ class CustomersControllerApi extends Controller
      * @param  \App\Models\Customers  $customers
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Customers $customer)
+    public function destroy($customer)
     {
-        //destroy customer
+        $request = $this->domain.'/api/customersapi/'.$customer;
+
+        $client = new Client();
+        try {
+                $response = $client->request('DELETE', $request, [
+                    'headers'  => [
+                        'token' => $this->token
+                    ]
+                ]);
+            }
+             catch (RequestException $e)
+              {
+                echo Psr7\str($e->getRequest());
+
+                if ($e->hasResponse()) {
+                    $body = $e->getResponse()->getBody();
+                    session()->flash('success', json_decode($body)->message);
+                    return redirect()->route('customers.index');
+                }
+            }
+
+        $json = $response->getBody();
+        $customer = json_decode($json)->message;
+
         session()->flash('success', 'Użytkownik usunięty');
 
         return redirect()->back();
