@@ -22,7 +22,7 @@ class CustomersControllerApi extends Controller
 
         $client = new Client();
         try {
-                $response = $client->request('GET', $request);
+                $response = $client->get($request);
             }
              catch (RequestException $e)
               {
@@ -60,8 +60,36 @@ class CustomersControllerApi extends Controller
      */
     public function store(Request $r)
     {
-        ///store customer
-        session()->flash('success', 'Użytkownik dodany');
+        $request = $this->domain.'/api/customersapi';
+
+        $client = new Client();
+        try {
+                $response = $client->request('POST', $request, [
+                    'headers'  => [
+                        'token' => $this->token
+                    ],
+                    'form_params' => [
+                        'new_customer_name' => $r->new_customer_name,
+                        'new_customer_adress' => $r->new_customer_adress,
+                        'new_customer_gender' => $r->new_customer_gender,
+                        'new_customer_age' => (int)$r->new_customer_age
+                    ]
+                ]);
+            }
+             catch (RequestException $e)
+              {
+                echo Psr7\str($e->getRequest());
+
+                if ($e->hasResponse()) {
+                    $body = $e->getResponse()->getBody();
+                    session()->flash('success', json_decode($body)->message);
+                    return redirect()->back();
+                }
+            }
+        $json = $response->getBody();
+        $data = json_decode($json)->message;
+
+        session()->flash('success', $data);
 
         return redirect()->back();
     }
