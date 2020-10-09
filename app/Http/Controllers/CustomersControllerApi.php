@@ -22,15 +22,22 @@ class CustomersControllerApi extends Controller
 
         $client = new Client();
         try {
-                $response = $client->get($request);
+                $response = $client->request('GET', $request, [
+                    'headers'  => [
+                        'token' => $this->token
+                    ]
+                ]);
             }
              catch (RequestException $e)
               {
                 echo Psr7\str($e->getRequest());
 
                 if ($e->hasResponse()) {
-
-                    echo Psr7\str($e->getResponse());
+                    $body = $e->getResponse()->getBody();
+                    $customers = (new Collection([]))->paginate(25);
+                    session()->flash('success', json_decode($body)->message);
+                    return view('adminpanel.layouts.index')
+                    ->with(compact('customers'));
                 }
             }
         $json = $response->getBody();
