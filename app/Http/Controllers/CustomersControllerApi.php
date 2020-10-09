@@ -19,13 +19,15 @@ class CustomersControllerApi extends Controller
     {   
         
         $request = $this->domain.'/api/customersapi';
+        $params = $r->all();
 
         $client = new Client();
         try {
                 $response = $client->request('GET', $request, [
                     'headers'  => [
                         'token' => $this->token
-                    ]
+                    ],
+                    'query' => $params
                 ]);
             }
              catch (RequestException $e)
